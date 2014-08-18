@@ -1,7 +1,7 @@
 Process
 -------
 
-- Server with connection open to Twitter (streaming user?)
+✓ Server with connection open to Twitter (streaming user?)
 - When receives something from Twitter, checks to see if it should do anything
   (e.g. if 1st word is verb 'Play' or 'Use' or something)
 - Uses info from database to check whether it needs to send a request to

@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+#
+# Tweet.
+#
+# Requires twitter (Python Twitter Tools), NOT python-twitter.
+#
+
+import os
+
+# twitter requires a json module
+# simplejson is updated more and may be faster
+# see: http://stackoverflow.com/questions/712791
+import simplejson
+import twitter
+
+import sys
+
+
+
+# your application keys (make an app at apps.twitter.com)
+consumer_key = ''
+consumer_secret = ''
+
+# user credential file location
+oauth_filename = os.getenv('HOME')+"/.twitterminal_creds-montest"
+
+
+
+# check above keys are present so we don't inconvenience Twitter for no reason
+if (consumer_key == '') or (consumer_secret == ''):
+    print(sys.argv[0] + ": error: no API keys present (go to apps.twitter.com to generate some)")
+    sys.exit(1)
+
+# redo OAuth biz (nice & automated) if we can't find an OAuth credentials file
+if not os.path.exists(oauth_filename):
+    # also writes creds to oauth_filename, usefully
+    twitter.oauth_dance('twitterminal', consumer_key, consumer_secret, oauth_filename)
+
+
+
+oauth_token, oauth_token_secret = twitter.read_token_file(oauth_filename)
+
+# start a stream
+twat_userstream = twitter.TwitterStream(auth=twitter.OAuth(oauth_token, oauth_token_secret, consumer_key, consumer_secret), domain='userstream.twitter.com')
+
+# print tweets
+num = 0
+for msg in twat_userstream.user():
+    if 'text' in msg:
+        num += 1
+        print("Tweet #: " + str(num))
+        print("User: " + msg['user']['screen_name'])
+        print("Text: " + msg['text'])
+        print("Full response:")
+        print()
+        print(msg)
+        print()
+        print()
